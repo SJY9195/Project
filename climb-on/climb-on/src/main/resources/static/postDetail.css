@@ -95,7 +95,7 @@ body {
 }
 
 .comment-section textarea {
-    width: 100%;
+    width: 90%;
     height: 50px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -158,8 +158,52 @@ body {
     padding: 10px 20px;
     font-size: 1em;
     color: white;
-    background-color: #333;
+    background-color: #ff7f50;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* 이전글/다음글 컨테이너 스타일 */
+.prev-next-container {
+    width: 100%;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.prev-next-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    padding: 10px 0; /* 위아래 여백 */
+    border-bottom: 1px solid #ddd; /* 항목 간 구분선 */
+}
+
+.prev-next-item:last-child {
+    border-bottom: none; /* 마지막 항목 아래에는 선 제거 */
+}
+
+/* 이전글, 다음글 제목 링크 스타일 */
+.prev-next-title a {
+    color: #FF7A00;
+    text-decoration: none;
+}
+
+.prev-next-title a:hover {
+    text-decoration: underline;
+}
+
+/* 비활성화 스타일 */
+.prev-next-disabled {
+    color: #aaa;
+    cursor: default;
+}
+
+/* 이전글/다음글 제목 */
+.prev-next-label {
+    font-weight: bold;
+    color: #666;
+    margin-right: 10px;
+    min-width: 50px; /* 레이블 간격 유지 */
 }

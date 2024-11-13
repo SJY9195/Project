@@ -60,6 +60,27 @@
         </div>
     </div>
 
+    <div class="prev-next-container">
+            <!-- 이전글 -->
+            <div class="prev-next-item">
+                <span class="prev-next-label">이전글</span>
+                <span class="prev-next-title">
+                <a href="#" th:if="${previousPost != null}" th:href="@{'/community/' + ${previousPost.id}}" th:text="${previousPost.title}"></a>
+                <span th:if="${previousPost == null}" class="prev-next-disabled">이전 글이 없습니다.</span>
+            </span>
+            </div>
+
+            <!-- 다음글 -->
+            <div class="prev-next-item">
+                <span class="prev-next-label">다음글</span>
+                <span class="prev-next-title">
+                <a href="#" th:if="${nextPost != null}" th:href="@{'/community/' + ${nextPost.id}}" th:text="${nextPost.title}"></a>
+                <span th:if="${nextPost == null}" class="prev-next-disabled">다음 글이 없습니다.</span>
+            </span>
+            </div>
+        </div>
+    </div>
+
     <!-- 목록으로 돌아가기 버튼 -->
     <div class="back-button">
         <button onclick="window.location.href='/community'">목록</button>

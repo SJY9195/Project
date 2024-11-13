@@ -20,12 +20,20 @@
     <!-- 카테고리 선택 -->
     <div class="form-group">
       <label for="category">카테고리</label>
-      <select id="category" name="category">
+      <select id="category" name="category" onchange="toggleEventFields(this.value)">
         <option value="공지">공지</option>
         <option value="가이드">가이드</option>
         <option value="소식">소식</option>
       </select>
     </div>
+
+    <!-- 행사 날짜 입력 (소식 카테고리 선택 시에만 표시)-->
+  <div class="form-group" id="eventFields" style="display: none;">
+    <label for="eventStartDate">행사 시작일</label>
+    <input type="date" id="eventStartDate" name="eventStartDate">
+    <label for="eventEndDate">행사 종료일</label>
+    <input type="date" id="eventEndDate" name="eventEndDate">
+  </div>
 
     <!-- 내용 입력 -->
     <div class="form-group">
@@ -51,6 +59,18 @@
       <button type="button" onclick="window.location.href='/community'">취소</button>
     </div>
   </form>
+
+  <!-- JS: 카테고리 선택에 따른 이벤트 필드 토글-->  <!--toggleEventFields 함수는 카테고리 값이 "소식"일 때만 eventFields를 보이게하고, 그외엔 숨김-->
+  <script>
+    function toggleEventFields(category){
+      const eventFields = document.getElementById('eventFields');
+      if (category === '소식'){
+        eventFields.style.display = 'block';
+      } else {
+        eventFields.style.display = 'none';
+      }
+    }
+  </script>
 </div>
 </body>
 </html>

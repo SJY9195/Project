@@ -1,5 +1,6 @@
 package com.ohgiraffers.climbon.community.dto;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -31,12 +32,17 @@ public class PostDTO {
 
     private byte status;
 
+    private Date eventStartDate;
+
+    private Date eventEndDate;
+
+    private String dday; // D-Day 계산 결과 저장
 
 
     public PostDTO() {
     }
 
-    public PostDTO(int id, int userId, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentCount, String imageUrl, boolean isAnonymous, int likes, byte status) {
+    public PostDTO(int id, int userId, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentCount, String imageUrl, boolean isAnonymous, int likes, byte status, Date eventStartDate, Date eventEndDate, String dday) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -50,7 +56,11 @@ public class PostDTO {
         this.isAnonymous = isAnonymous;
         this.likes = likes;
         this.status = status;
+        this.eventStartDate = eventStartDate;
+        this.eventEndDate = eventEndDate;
+        this.dday = dday;
     }
+
 
     // 작성일을 포맷팅해서 반환하는 메소드 : createdAt 필드가 오늘 날짜인 경우 몇시 몇분 형식으로 반환, 오늘날짜가 아닌경우 년/월/일 형식으로 반환
     public String getFormattedCreatedAt() {
@@ -171,6 +181,30 @@ public class PostDTO {
         this.status = status;
     }
 
+    public Date getEventStartDate() {
+        return eventStartDate;
+    }
+
+    public void setEventStartDate(Date eventStartDate) {
+        this.eventStartDate = eventStartDate;
+    }
+
+    public Date getEventEndDate() {
+        return eventEndDate;
+    }
+
+    public void setEventEndDate(Date eventEndDate) {
+        this.eventEndDate = eventEndDate;
+    }
+
+    public String getDday() {
+        return dday;
+    }
+
+    public void setDday(String dday) {
+        this.dday = dday;
+    }
+
     @Override
     public String toString() {
         return "PostDTO{" +
@@ -187,6 +221,9 @@ public class PostDTO {
                 ", isAnonymous=" + isAnonymous +
                 ", likes=" + likes +
                 ", status=" + status +
+                ", eventStartDate=" + eventStartDate +
+                ", eventEndDate=" + eventEndDate +
+                ", dday='" + dday + '\'' +
                 '}';
     }
 }
