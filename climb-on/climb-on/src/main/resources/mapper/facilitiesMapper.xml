@@ -18,11 +18,30 @@
             typeHandler="com.ohgiraffers.climbon.facilities.handler.FacilityTypeTypeHandler"/><!--이넘핸들러주소를써야함-->
 </resultMap>
 
+
     <select id="facilitiesList" parameterType="com.ohgiraffers.climbon.facilities.dto.FacilitiesDTO" resultMap="FacilityResultMap">
         SELECT
         *
         FROM FACILITIES
     </select>
+
+    <select id="categorySelect" parameterType="com.ohgiraffers.climbon.facilities.dto.FacilitiesDTO" resultMap="FacilityResultMap">
+        SELECT
+        *
+        FROM FACILITIES
+        WHERE CATEGORY_ID = #{ categoryId }
+        <if test="facilityName != null and facilityName !=''">
+        AND facility_name LIKE CONCAT('%', #{facilityName}, '%')
+        </if>
+    </select>
+
+    <select id="searchOneFacility" resultMap="FacilityResultMap">
+        SELECT
+        *
+        FROM FACILITIES
+        WHERE facility_name LIKE '%' #{facilityName} '%'
+    </select>
+
 
 
 </mapper>
