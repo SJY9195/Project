@@ -1,0 +1,59 @@
+@charset "utf-8";
+
+/*공통*/
+.content {
+    height: calc(100vh - var(--footerHeight));
+}
+.section-auth {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.section-auth .top-area h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+.section-auth .top-area p {
+    font-size: 16px;
+    margin-bottom: 45px;
+}
+.section-auth .cont {
+    width: 448px;
+    margin: auto;
+}
+
+
+.section-auth .cont .btn-submit {
+    height: 50px;
+    background: var(--point);
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 6px;
+    margin-top: 30px;
+}
+
+/*로그인*/
+.section-login .cont .btn-kakao {
+    margin-top: 20px;
+    background: #FEE500;
+    color: #000;
+}
+.section-login .cont .btn-kakao span {
+    margin-left: 12px;
+}
+
+.section-login .cont p {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+.section-login .cont p a {
+    color: var(--point);
+    font-weight: 500;
+}
+
+
