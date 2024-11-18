@@ -32,10 +32,12 @@
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
-    <!-- 카테고리 필터 & 페이징 처리 & 검색 & 작성자 정보 포함 게시글 목록 조회 -->
+    <!-- 카테고리 필터 & 페이징 처리 & 검색 & 작성자 정보 & 댓글 (조회수까지)포함 게시글 목록 조회 -->
     <select id="getPostsByPageAndCategoryAndSearch" resultMap="postResultMap">
-        SELECT * FROM (
-        SELECT p.*, u.nickname, u.profile_pic, (SELECT COUNT(*) FROM community_comments WHERE post_id = p.id) AS comments_count
+        SELECT posts_with_comment_count.*
+        FROM (
+        SELECT p.*, u.nickname AS userNickname, u.user_id AS userID, u.profile_pic AS userProfilePic,
+        (SELECT COUNT(*) FROM community_comments WHERE post_id = p.id) AS comments_count
         FROM community_posts p
         LEFT JOIN users u ON p.user_id = u.id
         <where>
@@ -112,7 +114,7 @@
     <select id="getTotalPostCount" resultType="int">
         SELECT COUNT(*) FROM community_posts
         <where>
-            <if test="category != null">
+            <if test="category != null and category != '전체'">
                 category = #{category}
             </if>
         </where>
@@ -145,9 +147,10 @@
             , event_start_date, event_end_date
         </if>
         )
-        VALUES (#{userId}, #{title}, #{content}, #{viewCount}, #{isAnonymous}, #{likes}, #{imageUrl}, #{category}, #{status}, NOW(), NOW()
+        VALUES (
+        #{userId}, #{title}, #{content}, #{viewCount}, #{isAnonymous}, #{likes}, #{imageUrl}, #{category}, #{status}, NOW(), NOW()
         <if test="category == '소식'">
-            , #{eventStartDate}, #{eventEndDate}   <!--카테고리 소식일 때만 행사시작,끝날짜 추가-->
+            , #{eventStartDate}, #{eventEndDate}
         </if>
         )
     </insert>
@@ -181,7 +184,5 @@
         SET view_count = view_count + 1
         WHERE id = #{id}
     </update>
-
-
 
 </mapper>

@@ -11,7 +11,7 @@ public class PostDTO {
 
     private Integer id;
 
-    private String userId;
+    private Integer userId;
 
     private String userNickname;
 
@@ -50,7 +50,7 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(Integer id, String userId, String userNickname, String userProfilePic, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentsCount, String imageUrl, boolean isAnonymous, int likes, byte status, String eventStartDate, String eventEndDate, String dday) {
+    public PostDTO(Integer id, Integer userId, String userNickname, String userProfilePic, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentsCount, String imageUrl, boolean isAnonymous, int likes, byte status, String eventStartDate, String eventEndDate, String dday) {
         this.id = id;
         this.userId = userId;
         this.userNickname = userNickname;
@@ -118,11 +118,11 @@ public class PostDTO {
         return id;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

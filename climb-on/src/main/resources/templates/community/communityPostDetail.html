@@ -21,6 +21,7 @@
             </div>
             <div class="author-info">
                 <img th:src="${post.userProfilePic}" alt="프로필 이미지" style="width: 50px; height: 50px; border-radius: 50%;">
+                <span th:text="${post.userId}">작성자 ID</span>
                 <span class="author-name" th:text="${post.userNickname}">작성자 닉네임</span>
                 <span class="post-date" th:text="${post.formattedCreatedAt}">작성일</span>
                 <span class="views">조회수 <span th:text="${post.viewCount}">0</span></span>
@@ -37,7 +38,7 @@
     <!-- 게시글 내용 -->
     <div class="post-content">
         <div class="post-image" th:if="${post.imageUrl != null}">
-            <img th:src="${post.imageUrl}" alt="게시글 이미지">
+            <img th:src="${post.imageUrl != null ? post.imageUrl : '/images/default-image.png'}" alt="게시글 이미지">
         </div>
         <p th:text="${post.content}">게시글 내용 예시</p>
     </div>
@@ -63,7 +64,7 @@
                 <img src="/images/avatar.png" alt="댓글 작성자 프로필 이미지">
             </div>
             <div class="comment-content">
-                <span class="comment-author" th:text="${comment.userId}">댓글 작성자</span>
+                <span class="comment-author" th:text="${comment.userNickname}">댓글 작성자</span>
                 <p th:text="${comment.content}">댓글 내용</p>
                 <span class="comment-date" th:text="${comment.formattedCreatedAt}">작성일</span>
             </div>

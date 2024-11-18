@@ -4,6 +4,8 @@ import com.ohgiraffers.climbon.community.dto.CommentDTO;
 import com.ohgiraffers.climbon.community.dto.PostDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -33,4 +35,13 @@ public interface PostDAO {
     List<CommentDTO> getCommentsByPostId(Integer postId);
 
     void insertComment(CommentDTO comment);
+
+    @Select("SELECT id FROM users WHERE user_id = #{userId}")
+    Integer getUserIdByUserName(@Param("userId") String userId);
+
+    @Select("SELECT nickname FROM users WHERE id = #{userId}")
+    String getUserNicknameById(@Param("userId") Integer userId);
+
+    @Select("SELECT id FROM users WHERE user_id = #{email}")
+    Integer getUserIdByEmail(@Param("email") String email);
 }

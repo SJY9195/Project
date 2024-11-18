@@ -76,6 +76,12 @@ public class PostService {
     }
 
     public void updatePost(PostDTO post) {
+        // 수정 시 이미지 URL이 존재하지 않을 경우 기존 값을 유지
+        PostDTO existingPost = postDAO.getPostById(post.getId());
+        if (post.getImageUrl() == null || post.getImageUrl().isEmpty()){
+            post.setImageUrl(existingPost.getImageUrl());
+        }
+
         postDAO.updatePost(post);
     }
 
@@ -102,5 +108,17 @@ public class PostService {
 
     public void insertComment(CommentDTO comment){
         postDAO.insertComment(comment);
+    }
+
+    public Integer getUserIdByUserName(String userId) {
+        return postDAO.getUserIdByUserName(userId);
+    }
+
+    public String getUserNicknameById(Integer userId) {
+        return postDAO.getUserNicknameById(userId);
+    }
+
+    public Integer findUserIdByEmail(String email) {
+        return postDAO.getUserIdByEmail(email);
     }
 }
