@@ -6,6 +6,7 @@ import com.ohgiraffers.climbon.community.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -38,6 +39,12 @@ public class PostController {
         List<PostDTO> posts = postService.getPostsByPageAndCategoryAndSearch(page, pageSize, category, searchKeyword, sort, dday);
         int totalPosts = postService.getTotalPostCount(category, searchKeyword); // 전체 게시글 수   //전체 게시글 수를 가져와 페이지수를 계산
         int totalPages = (int) Math.ceil((double) totalPosts / pageSize); // 전체 페이지 수 계산  //ceil 함수는 올림을 해줌
+
+        for (PostDTO post : posts) {
+            // 각 게시글의 userId를 사용해 닉네임 조회 후 설정
+            String userNickname =  postService.getUserNicknameById(post.getUserId());
+            post.setUserNickname(userNickname);
+        }
 
 
 //        // 현재 페이지 값 보정
@@ -78,8 +85,6 @@ public class PostController {
     // 특정 게시글 상세 페이지
     @GetMapping("/{id}")
     public String getPostById(@PathVariable("id") Integer id, Model model){// previousPost 와 nextPost 정보를 추가로 조회
-        // 조회수 증가
-        postService.incrementViewCount(id);
 
         PostDTO post = postService.getPostById(id);
         List<CommentDTO> comments = postService.getCommentsByPostId(id); // 댓글 목록 가져오기
@@ -221,6 +226,14 @@ public class PostController {
 
         postService.insertComment(comment); // 댓글 추가
         return "redirect:/community/" + postId;
+    }
+
+    // 좋아요(하트) 증가 API (컨트롤러에서 AJAX 요청을 받아 좋아요 증가 처리)
+    @PostMapping("/{id}/heart")
+    public ResponseEntity<String> toggleHeart(@PathVariable("id") int postId, Principal principal) {
+        Integer userId = postService.getUserIdByUserName(principal.getName()); // 로그인한 사용자 ID 갖고옴
+        postService.toggleLike(postId, userId); // 좋아요 추가/취소 처리
+        return ResponseEntity.ok("Heart toggled");
     }
 
 }
