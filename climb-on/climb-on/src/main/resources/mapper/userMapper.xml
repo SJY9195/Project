@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.climbon.user.dao.UserMapper">
+    <resultMap id="userMap" type="com.ohgiraffers.climbon.user.dto.UserDTO">
+        <id property="id" column="ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="userRole" column="USER_ROLE"/>
+        <result property="profilePic" column="PROFILE_PIC"/>
+        <result property="oneLiner" column="ONE_LINER"/>
+        <result property="facilityCode" column="FACILITY_CODE"/>
+        <result property="status" column="STATUS"/>
+        <result property="isBusiness" column="IS_BUSINESS"/>
+        <result property="createdAt" column="CREATED_AT"/>
+        <result property="inactiveAt" column="INACTIVE_AT"/>
+    </resultMap>
+
+    <resultMap id="noticeMap" type="com.ohgiraffers.climbon.user.dto.NoticeDTO">
+        <result property="userCode" column="USER_CODE"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="facilityCode" column="FACILITY_CODE"/>
+        <result property="attachFile" column="ATTACH_FILE"/>
+        <result property="isApproval" column="IS_APPROVAL"/>
+    </resultMap>
+
+
+    <select id="findByKey" parameterType="com.ohgiraffers.climbon.user.dto.UserDTO" resultMap="userMap">
+        SELECT
+            *
+          FROM USERS
+         WHERE ID = #{id}
+    </select>
+
+    <select id="findCrewName"  parameterType="int" resultType="String">
+        SELECT
+            b.CREW_NAME
+          FROM USER_CREW a
+          JOIN CREWS b
+            ON a.CREW_CODE = b.ID
+         WHERE a.USER_CODE = #{id}
+    </select>
+
+    <select id="findHomeName" parameterType="int" resultType="String">
+        SELECT
+            b.FACILITY_NAME
+          FROM USERS a
+          JOIN FACILITIES b
+            ON a.FACILITY_CODE = b.ID
+        WHERE a.ID = #{id}
+    </select>
+
+    <update id="updateUser" parameterType="com.ohgiraffers.climbon.user.dto.UserDTO">
+        UPDATE
+            USERS
+          SET
+            NICKNAME = #{nickname},
+            PASSWORD = #{password},
+            ONE_LINER = #{oneLiner}
+         WHERE ID = #{id};
+    </update>
+
+    <update id="updateProfile" parameterType="hashmap">
+        UPDATE
+            USERS
+          SET
+            PROFILE_PIC = #{profilePic}
+         WHERE ID = #{id}
+    </update>
+
+    <update id="updateStatus" parameterType="hashmap">
+        UPDATE
+            USERS
+          SET
+            STATUS = 0,
+            INACTIVE_AT = #{inactiveAt}
+         WHERE ID = #{id}
+    </update>
+
+    <insert id="saveApply" parameterType="hashmap">
+        INSERT INTO BUSINESS_APPLY (
+            USER_CODE,
+            ATTACH_FILE,
+            FACILITY_CODE
+        ) VALUES (
+            #{id},
+            #{attachFile},
+            #{facilityId}
+        )
+    </insert>
+
+    <insert id="saveAdminNotice" parameterType="Integer">
+        INSERT INTO ADMIN_NOTICE (
+            USER_CODE,
+            CATEGORY
+        ) VALUES (
+            #{id},
+            1
+        )
+    </insert>
+
+    <select id="findById" parameterType="Integer" resultType="String">
+        SELECT
+            NICKNAME
+          FROM USERS
+         WHERE ID = #{userCode};
+    </select>
+
+    <!--<select id="selectManagerNotice" parameterType="com.ohgiraffers.climbon.user.dto.NoticeDTO" resultMap="noticeMap">
+        SELECT
+        *
+        FROM MANAGER_NOTICE;
+    </select>-->
+
+    <select id="selectAdminNotice" parameterType="com.ohgiraffers.climbon.user.dto.NoticeDTO" resultMap="noticeMap">
+        SELECT
+            a.USER_CODE,
+            a.CATEGORY,
+            b.FACILITY_CODE,
+            b.ATTACH_FILE,
+            b.IS_APPROVAL
+          FROM ADMIN_NOTICE a
+          JOIN BUSINESS_APPLY b
+            ON a.USER_CODE = b.USER_CODE
+         WHERE b.IS_APPROVAL = 0;
+    </select>
+
+    <update id="updateNotice" parameterType="com.ohgiraffers.climbon.user.dto.NoticeDTO">
+        UPDATE
+            BUSINESS_APPLY
+           SET IS_APPROVAL = #{isApproval}
+         WHERE USER_CODE = #{userCode}
+    </update>
+
+</mapper>

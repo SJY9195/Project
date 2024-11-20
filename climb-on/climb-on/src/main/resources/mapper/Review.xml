@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.climbon.facilities.dao.ReviewDAO">
+    <resultMap id="ReviewResultMap" type="com.ohgiraffers.climbon.facilities.dto.ReviewDTO">
+
+        <id property="id" column="id" />
+        <result property="FacilityId" column="FACILITY_ID" />
+        <result property="ReviewerId" column="USER_ID" />
+        <result property="rating" column="RATING" />
+        <result property="comment" column="COMMENT" />
+        <result property="createdAt" column="CREATED_AT" />
+        <result property="userNickname" column="userNickname"/>
+        <result property="likeCount" column="likeCount"/>
+    </resultMap>
+
+    <select id="getReview" resultMap="ReviewResultMap">
+        SELECT
+        r.ID AS review_id,
+        r.RATING,
+        r.COMMENT,
+        r.CREATED_AT,
+        u.nickname AS userNickname,
+        COUNT(urh.user_code) AS likeCount
+        FROM
+        REVIEWS r
+        JOIN
+        USERS u ON r.USER_ID = u.ID
+        LEFT JOIN
+        user_review_heart urh ON r.ID = urh.review_code
+        WHERE
+        r.FACILITY_ID = #{id}
+        GROUP BY
+        r.ID, r.RATING, r.COMMENT, r.CREATED_AT, u.nickname
+        ORDER BY
+        r.CREATED_AT DESC;
+    </select>
+
+</mapper>

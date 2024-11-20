@@ -5,11 +5,13 @@
 
 package com.ohgiraffers.climbon.facilities.controller;
 
+import com.ohgiraffers.climbon.auth.model.AuthDetail;
 import com.ohgiraffers.climbon.facilities.dto.FacilitiesDTO;
+import com.ohgiraffers.climbon.facilities.dto.FacilityFavoriteDTO;
 import com.ohgiraffers.climbon.facilities.service.FacilitiesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -66,16 +68,45 @@ public class FacilitiesController {
     }
     //검색시 실시간
     @GetMapping("/suggestions")
-    public ResponseEntity<List<FacilitiesDTO>> getSuggestions(@RequestParam String code) {
+    public ResponseEntity<List<FacilitiesDTO>> getSuggestions(@RequestParam String code) { // 이건 쿼리파라미터
 
         List<FacilitiesDTO> suggestions = facilitiesService.getFacilitySuggestions(code);
         return ResponseEntity.ok(suggestions);
 
 
     }
+    //하나만 가져오기
+    @GetMapping("facility/{id}")
+    public ResponseEntity<FacilitiesDTO> getFacility(@PathVariable("id") int facilityId) { //이건 그냥 단순값
 
+        FacilitiesDTO facilityDTO = facilitiesService.getFacility(facilityId);
+        System.out.println("facilityDTO = " + facilityDTO);
+        return ResponseEntity.ok(facilityDTO);
+    }
 
+    @PostMapping("/update-favorite")
+    public String updateFavorite(@RequestBody Map<String, Object> requestData, @AuthenticationPrincipal AuthDetail userDetails) {
+        Integer facilityId = (Integer) requestData.get("facilityId");  // JSON에서 facilityId 추출
+        boolean favorite = (boolean) requestData.get("isFavorite");
+        Integer userId = userDetails.getLoginUserDTO().getId();
+        int result;
 
+        if (favorite) {
+            result =  facilitiesService.addFavorite(userId, facilityId);
+            System.out.println("result = " + result);
+            return "즐겨찾기 추가되었습니다.";
+        } else {
+            facilitiesService.removeFavorite(userId, facilityId);
+            return "즐겨찾기 삭제되었습니다.";
+        }
+    }
+    @PostMapping("/getIsFavorite")
+    public ResponseEntity<Integer> getIsFavorite(@RequestParam int id, @AuthenticationPrincipal AuthDetail userDetails) {
+        Integer userId = userDetails.getLoginUserDTO().getId();
+        Integer result = facilitiesService.getIsFavorite(id,userId);
+        System.out.println("여기맞지? = " + result);
+        return ResponseEntity.ok(result);
+    }
 
 
 

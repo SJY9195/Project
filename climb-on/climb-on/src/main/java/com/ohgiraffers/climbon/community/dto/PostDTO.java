@@ -5,12 +5,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class PostDTO {
 
-    private int id;
+    private Integer id;
 
-    private String userId;
+    private Integer userId;
 
     private String userNickname;
 
@@ -28,16 +29,17 @@ public class PostDTO {
 
     private int viewCount;
 
-    private int commentCount;
+    private int commentsCount;
 
     private String imageUrl;
 
     private boolean isAnonymous;
 
-    private int likes;
+    private int heartsCount;
 
-    private byte status;
+    private boolean isLiked; // 좋아요 여부
 
+    private boolean status = true; // 기본값을 활성 상태로 설정
 
     private String eventStartDate;
 
@@ -45,11 +47,10 @@ public class PostDTO {
 
     private String dday; // D-Day 계산 결과 저장
 
-
     public PostDTO() {
     }
 
-    public PostDTO(int id, String userId, String userNickname, String userProfilePic, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentCount, String imageUrl, boolean isAnonymous, int likes, byte status, String eventStartDate, String eventEndDate, String dday) {
+    public PostDTO(Integer id, Integer userId, String userNickname, String userProfilePic, String title, String content, String category, LocalDateTime createdAt, LocalDateTime updatedAt, int viewCount, int commentsCount, String imageUrl, boolean isAnonymous, int heartsCount, boolean isLiked, boolean status, String eventStartDate, String eventEndDate, String dday) {
         this.id = id;
         this.userId = userId;
         this.userNickname = userNickname;
@@ -60,10 +61,11 @@ public class PostDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.viewCount = viewCount;
-        this.commentCount = commentCount;
+        this.commentsCount = commentsCount;
         this.imageUrl = imageUrl;
         this.isAnonymous = isAnonymous;
-        this.likes = likes;
+        this.heartsCount = heartsCount;
+        this.isLiked = isLiked;
         this.status = status;
         this.eventStartDate = eventStartDate;
         this.eventEndDate = eventEndDate;
@@ -86,34 +88,64 @@ public class PostDTO {
         this.userProfilePic = userProfilePic;
     }
 
-    // 작성일을 포맷팅해서 반환하는 메소드 : createdAt 필드가 오늘 날짜인 경우 몇시 몇분 형식으로 반환, 오늘날짜가 아닌경우 년/월/일 형식으로 반환
+    // 작성일을 포맷팅해서 반환하는 메소드 : createdAt 필드가 오늘 날짜인 경우 몇시 몇분 형식으로 반환, 오늘날짜가 아닌경우 년/월/일 형식으로 반환 // 1,2,3일전은 하루전, 이틀전, 3일전으로 나타낼 수 있게 추가
     public String getFormattedCreatedAt() {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        if (createdAt.toLocalDate().isEqual(now.toLocalDate())) {
-            // 오늘 날짜인 경우 시간만 표시
-            formatter = DateTimeFormatter.ofPattern("HH:mm");
+        long daysAgo = ChronoUnit.DAYS.between(createdAt.toLocalDate(), now.toLocalDate());
+
+        if (daysAgo == 0){
+        // 오늘 작성된 경우 시간만 표시
+            return createdAt.format(timeFormatter);
+        } else if (daysAgo == 1){
+            return "하루전";
+        } else if (daysAgo == 2){
+            return "이틀전";
+        } else if (daysAgo ==3 ){
+            return "3일전";
         } else {
-            // 오늘 아닌 경우 날짜만 표시
-            formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.");
+            // 3일 이상 지난 경우 날짜 형식으로 표시
+            return createdAt.format(dateFormatter);
         }
-        return createdAt.format(formatter);
     }
 
-    public int getId() {
-        return id;
+    public String getFormattedUpdatedAt() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        long daysAgo = ChronoUnit.DAYS.between(updatedAt.toLocalDate(), now.toLocalDate());
+
+        if (daysAgo == 0){
+            // 오늘 작성된 경우 시간만 표시
+            return updatedAt.format(timeFormatter);
+        } else if (daysAgo == 1){
+            return "하루전";
+        } else if (daysAgo == 2){
+            return "이틀전";
+        } else if (daysAgo ==3 ){
+            return "3일전";
+        } else {
+            // 3일 이상 지난 경우 날짜 형식으로 표시
+            return updatedAt.format(dateFormatter);
+        }
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getUserId() {
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -165,12 +197,12 @@ public class PostDTO {
         this.viewCount = viewCount;
     }
 
-    public int getCommentCount() {
-        return commentCount;
+    public int getCommentsCount() {
+        return commentsCount;
     }
 
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 
     public String getImageUrl() {
@@ -189,19 +221,19 @@ public class PostDTO {
         isAnonymous = anonymous;
     }
 
-    public int getLikes() {
-        return likes;
+    public int getHeartsCount() {
+        return heartsCount;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
+    public void setHeartsCount(int heartsCount) {
+        this.heartsCount = heartsCount;
     }
 
-    public byte getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
@@ -229,6 +261,14 @@ public class PostDTO {
         this.dday = dday;
     }
 
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
     @Override
     public String toString() {
         return "PostDTO{" +
@@ -242,13 +282,14 @@ public class PostDTO {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", viewCount=" + viewCount +
-                ", commentCount=" + commentCount +
+                ", commentsCount=" + commentsCount +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", isAnonymous=" + isAnonymous +
-                ", likes=" + likes +
+                ", heartsCount=" + heartsCount +
+                ", isLiked=" + isLiked +
                 ", status=" + status +
-                ", eventStartDate=" + eventStartDate +
-                ", eventEndDate=" + eventEndDate +
+                ", eventStartDate='" + eventStartDate + '\'' +
+                ", eventEndDate='" + eventEndDate + '\'' +
                 ", dday='" + dday + '\'' +
                 '}';
     }
