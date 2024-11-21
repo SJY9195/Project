@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/community")
-public class PostController {
+public class PostController { //깃추가용
 
     @Autowired
     private PostService postService;
